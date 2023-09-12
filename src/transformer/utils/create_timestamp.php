@@ -34,10 +34,5 @@ defined('MOODLE_INTERNAL') || die();
  * @return string
  */
 function create_timestamp($time) {
-    // Set timezone back to site default after this manual change.
-    $timezone = date_default_timezone_get();
-    date_default_timezone_set('Europe/London');
-    $date = date('c', $time);
-    date_default_timezone_set($timezone);
-    return $date;
+    return date('c', $time);
 }
