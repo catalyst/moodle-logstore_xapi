@@ -39,7 +39,8 @@ function sco_launched(array $config, \stdClass $event) {
     $repo = $config['repo'];
     $user = $repo->read_record_by_id('user', $event->userid);
     $course = $repo->read_record_by_id('course', $event->courseid);
-    $scorm = $repo->read_record_by_id('scorm', $event->objectid);
+    $scormscoes = $repo->read_record_by_id('scorm_scoes', $event->objectid);
+    $scorm = $repo->read_record_by_id('scorm', $scormscoes->scorm);
     $lang = utils\get_course_lang($course);
 
     return [[
@@ -47,24 +48,26 @@ function sco_launched(array $config, \stdClass $event) {
         'verb' => [
             'id' => 'http://adlnet.gov/expapi/verbs/launched',
             'display' => [
-                $lang => 'launched'
+                'en' => 'Launched',
             ],
         ],
-        'object' => utils\get_activity\course_scorm($config, $event->contextinstanceid, $scorm, $lang),
-        'timestamp' => utils\get_event_timestamp($event),
+        'object' => utils\get_activity\scorm_content_object(
+            $config,
+            $course,
+            $event->contextinstanceid
+        ),
         'context' => [
-            'platform' => $config['source_name'],
-            'language' => $lang,
-            'extensions' => utils\extensions\base($config, $event, $course),
+            ...utils\get_context_base($config, $event, $lang, $course),
             'contextActivities' => [
-                'grouping' => [
-                    utils\get_activity\site($config),
-                    utils\get_activity\course($config, $course),
-                ],
+                'parent' => utils\context_activities\get_parent(
+                    $config,
+                    $event->contextinstanceid,
+                    true
+                ),
                 'category' => [
-                    utils\get_activity\source($config),
-                ]
+                    utils\get_activity\site($config),
+                ],
             ],
-        ]
+        ],
     ]];
 }

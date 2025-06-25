@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/admin/tool/log/store/xapi/tests/xapi_test_case.ph
  *            David Pesce <david.pesce@exputo.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class completing_existing_course_test extends \logstore_xapi\xapi_test_case {
+final class completing_existing_course_test extends \logstore_xapi\xapi_test_case {
 
     /**
      * Retrieve the directory of the unit test.
@@ -43,12 +43,30 @@ class completing_existing_course_test extends \logstore_xapi\xapi_test_case {
     }
 
     /**
+     * Retrieve the plugin type being tested.
+     *
+     * @return string
+     */
+    protected function get_plugin_type() {
+        return "core";
+    }
+
+    /**
+     * Retrieve the plugin name being tested.
+     *
+     * @return string
+     */
+    protected function get_plugin_name() {
+        return "course";
+    }
+
+    /**
      * Appease auto-detecting of test cases. xapi_test_case has default test cases.
      *
      * @covers ::course_completed
      * @return void
      */
-    public function test_init() {
+    public function test_init(): void {
 
     }
 }

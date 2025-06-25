@@ -1,0 +1,14 @@
+{
+  "facetoface": [
+    {
+      "id": 1,
+      "name": "test_facetoface_name"
+    }
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "name": "facetoface"
+    }
+  ]
+}
