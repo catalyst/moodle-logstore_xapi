@@ -46,7 +46,7 @@ class certificate_verified_test extends \logstore_xapi\xapi_test_case {
      * @return string
      */
     protected function get_plugin_type() {
-        return "core";
+        return "tool";
     }
 
     /**
@@ -55,7 +55,7 @@ class certificate_verified_test extends \logstore_xapi\xapi_test_case {
      * @return string
      */
     protected function get_plugin_name() {
-        return "badge";
+        return "certificate";
     }
 
     /**

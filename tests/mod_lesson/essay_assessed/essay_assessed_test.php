@@ -67,11 +67,17 @@ class essay_assessed_test extends \logstore_xapi\xapi_test_case {
     public function test_init() {
         if (!defined('LESSON_PAGE_SHORTANSWER')) {
             define('LESSON_PAGE_SHORTANSWER', 1);
-            define('LESSON_PAGE_ESSAY', 10);
             define('LESSON_PAGE_TRUEFALSE', 2);
-            define('LESSON_PAGE_MULTICHOICE', 3);
-            define('LESSON_PAGE_MATCHING', 5);
             define('LESSON_PAGE_NUMERICAL', 8);
+        }
+        if (!defined('LESSON_PAGE_ESSAY')) {
+            define('LESSON_PAGE_ESSAY', 10);
+        }
+        if (!defined('LESSON_PAGE_MULTICHOICE')) {
+            define('LESSON_PAGE_MULTICHOICE', 3);
+        }
+        if (!defined('LESSON_PAGE_MATCHING')) {
+            define('LESSON_PAGE_MATCHING', 5);
         }
     }
 }

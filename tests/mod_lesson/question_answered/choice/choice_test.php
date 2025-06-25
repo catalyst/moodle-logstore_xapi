@@ -100,5 +100,8 @@ class choice_test extends \logstore_xapi\xapi_test_case {
             define('LESSON_PAGE_MATCHING', 5);
             define('LESSON_PAGE_NUMERICAL', 8);
         }
+        if (!defined('LESSON_PAGE_TRUEFALSE')) {
+            define('LESSON_PAGE_TRUEFALSE', 2);
+        }
     }
 }
