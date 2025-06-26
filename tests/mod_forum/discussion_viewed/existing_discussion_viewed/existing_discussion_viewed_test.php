@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace logstore_xapi\mod_forum\discussion_viewed\existing_discussion_viewed;
+namespace logstore_xapi\mod_forum;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -43,9 +43,27 @@ class existing_discussion_viewed_test extends \logstore_xapi\xapi_test_case {
     }
 
     /**
+     * Retrieve the plugin type being tested.
+     *
+     * @return string
+     */
+    protected function get_plugin_type() {
+        return "mod";
+    }
+
+    /**
+     * Retrieve the plugin name being tested.
+     *
+     * @return string
+     */
+    protected function get_plugin_name() {
+        return "forum";
+    }
+
+    /**
      * Appease auto-detecting of test cases. xapi_test_case has default test cases.
      *
-     * @covers ::discussion_viewed
+     * @covers ::existing_discussion_viewed
      * @return void
      */
     public function test_init() {
