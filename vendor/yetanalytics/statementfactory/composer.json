@@ -1,0 +1,20 @@
+{
+  "name": "yetanalytics/statementfactory",
+  "description": "Learning Locker's classes for xAPI.",
+  "license": "GPL-3.0-only",
+  "autoload": {
+    "psr-4": {
+      "Locker\\XApi\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Ryan Smith",
+      "email": "0ryansmith1994@gmail.com"
+    },
+    {
+      "name": "Milt Reder",
+      "email": "milt@yetanalytics.com"
+    }
+  ]
+}
