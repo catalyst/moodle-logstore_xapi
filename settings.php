@@ -148,7 +148,12 @@ if ($hassiteconfig) {
     }
 
     $settings->add(new admin_setting_configmulticheckbox('logstore_xapi/routes',
-        get_string('routes', 'logstore_xapi'), '', $menuroutes, $menuroutes));
+        get_string('routes', 'logstore_xapi'),
+        '',
+        // Empty array as default breaks core unit tests, so use null if there are no defaults.
+        empty($menuroutes) ? null : $menuroutes,
+        $menuroutes
+    ));
 
     // The xAPI Error Log page.
     $errorreport = new admin_externalpage(
