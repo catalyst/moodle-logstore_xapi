@@ -64,7 +64,7 @@ class discussion_subscription_created_test extends \logstore_xapi\xapi_test_case
      * @covers ::discussion_subscription_created_test
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

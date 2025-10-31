@@ -66,7 +66,7 @@ class live_session_test extends \logstore_xapi\xapi_test_case {
      * @covers ::live_session
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

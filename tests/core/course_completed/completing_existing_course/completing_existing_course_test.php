@@ -66,7 +66,7 @@ final class completing_existing_course_test extends \logstore_xapi\xapi_test_cas
      * @covers ::course_completed
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

@@ -64,7 +64,7 @@ class post_deleted_test extends \logstore_xapi\xapi_test_case {
      * @covers ::post_deleted
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

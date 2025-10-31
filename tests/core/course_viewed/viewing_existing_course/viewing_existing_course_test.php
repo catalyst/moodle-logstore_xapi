@@ -66,7 +66,7 @@ final class viewing_existing_course_test extends \logstore_xapi\xapi_test_case {
      * @covers ::course_viewed
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

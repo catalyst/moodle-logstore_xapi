@@ -64,7 +64,7 @@ class attempt_becameoverdue_test extends \logstore_xapi\xapi_test_case {
      * @covers ::attempt_becameoverdue
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

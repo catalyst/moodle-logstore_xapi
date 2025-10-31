@@ -64,7 +64,7 @@ class response_submitted_test extends \logstore_xapi\xapi_test_case {
      * @covers ::response_submitted
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

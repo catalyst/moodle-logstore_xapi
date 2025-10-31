@@ -64,7 +64,7 @@ class submission_unlocked_test extends \logstore_xapi\xapi_test_case {
      * @covers ::submission_unlocked
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

@@ -64,7 +64,7 @@ final class updating_existing_course_test extends \logstore_xapi\xapi_test_case 
      * @covers ::attempt_submitted
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

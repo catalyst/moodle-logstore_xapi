@@ -63,7 +63,7 @@ final class existing_group_member_removed_test extends \logstore_xapi\xapi_test_
      *
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

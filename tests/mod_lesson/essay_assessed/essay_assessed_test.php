@@ -55,7 +55,7 @@ class essay_assessed_test extends \logstore_xapi\xapi_test_case {
      * @return string
      */
     protected function get_plugin_name() {
-        return "glossary";
+        return "lesson";
     }
 
     /**
@@ -64,7 +64,7 @@ class essay_assessed_test extends \logstore_xapi\xapi_test_case {
      * @covers ::essay_assessed
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
         if (!defined('LESSON_PAGE_SHORTANSWER')) {
             define('LESSON_PAGE_SHORTANSWER', 1);
             define('LESSON_PAGE_TRUEFALSE', 2);

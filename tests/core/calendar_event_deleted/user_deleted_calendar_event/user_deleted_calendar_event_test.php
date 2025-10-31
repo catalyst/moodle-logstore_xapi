@@ -64,7 +64,7 @@ final class user_deleted_calendar_event_test extends \logstore_xapi\xapi_test_ca
      * @covers ::attempt_submitted
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

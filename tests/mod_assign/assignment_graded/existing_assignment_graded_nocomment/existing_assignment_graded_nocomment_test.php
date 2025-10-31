@@ -66,7 +66,7 @@ class existing_assignment_graded_nocomment_test extends \logstore_xapi\xapi_test
      * @covers ::assignment_graded
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

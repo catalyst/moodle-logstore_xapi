@@ -66,7 +66,7 @@ class existing_booking_canceled_test extends \logstore_xapi\xapi_test_case {
      * @covers ::cancel_booking
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

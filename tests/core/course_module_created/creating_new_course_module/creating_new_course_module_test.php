@@ -64,7 +64,7 @@ final class creating_new_course_module_test extends \logstore_xapi\xapi_test_cas
      * @covers ::attempt_submitted
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

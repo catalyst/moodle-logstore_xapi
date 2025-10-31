@@ -20,6 +20,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+require_once($CFG->dirroot . '/admin/tool/log/store/xapi/tests/xapi_test_case.php');
+
 /**
  * Unit test calendar_event_updated event.
  *
@@ -62,6 +64,6 @@ final class user_updated_calendar_event_test extends \logstore_xapi\xapi_test_ca
      * @covers ::attempt_submitted
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
     }
 }

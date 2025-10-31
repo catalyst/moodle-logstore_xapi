@@ -66,7 +66,7 @@ class recording_protected_test extends \logstore_xapi\xapi_test_case {
      * @covers ::recording_protected
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

@@ -79,7 +79,7 @@ final class send_jisc_data_test extends \logstore_xapi\xapi_test_case {
      * @covers ::course_completed
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

@@ -64,7 +64,7 @@ class submission_viewed_test extends \logstore_xapi\xapi_test_case {
      * @covers ::submission_viewed
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

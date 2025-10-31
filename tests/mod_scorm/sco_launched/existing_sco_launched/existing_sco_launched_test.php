@@ -66,7 +66,7 @@ class existing_sco_launched_test extends \logstore_xapi\xapi_test_case {
      * @covers ::sco_launched
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }
