@@ -64,7 +64,7 @@ final class user_viewed_search_results_test extends \logstore_xapi\xapi_test_cas
      * @covers ::attempt_submitted
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

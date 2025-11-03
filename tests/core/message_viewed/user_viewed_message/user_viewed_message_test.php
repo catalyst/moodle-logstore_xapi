@@ -64,7 +64,7 @@ final class user_viewed_message_test extends \logstore_xapi\xapi_test_case {
      * @covers ::message_viewed
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

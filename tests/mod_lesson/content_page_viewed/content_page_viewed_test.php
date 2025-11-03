@@ -64,7 +64,7 @@ class content_page_viewed_test extends \logstore_xapi\xapi_test_case {
      * @covers ::content_page_viewed
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

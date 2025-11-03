@@ -66,7 +66,7 @@ class existing_module_test extends \logstore_xapi\xapi_test_case {
      * @covers ::attempt_viewed
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

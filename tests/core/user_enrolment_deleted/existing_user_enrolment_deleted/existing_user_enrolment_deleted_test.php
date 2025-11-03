@@ -64,7 +64,7 @@ final class existing_user_enrolment_deleted_test extends \logstore_xapi\xapi_tes
      * @covers ::attempt_submitted
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

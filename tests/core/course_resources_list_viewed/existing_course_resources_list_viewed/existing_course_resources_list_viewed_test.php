@@ -64,7 +64,7 @@ final class existing_course_resources_list_viewed_test extends \logstore_xapi\xa
      * @covers ::course_viewed
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

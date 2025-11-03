@@ -64,7 +64,7 @@ class user_resumed_course_test extends \logstore_xapi\xapi_test_case {
      * @covers ::user_enrolment_created
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

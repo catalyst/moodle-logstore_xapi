@@ -61,6 +61,16 @@ abstract class xapi_test_case extends \advanced_testcase {
             // We use a mutable global.
             $GLOBALS['PHPUNIT_XAPI_TESTCASE'] = true;
         }
+
+        $this->initialise_defines();
+    }
+
+    /**
+     * Initialise any defines required for this test. Called by setUp().
+     * Intended to be overwritten by superclass
+     */
+    protected function initialise_defines(): void {
+        return;
     }
 
     /**
@@ -132,6 +142,7 @@ abstract class xapi_test_case extends \advanced_testcase {
     /**
      * Create the test event.
      *
+     * @runInSeparateProcess
      * @return void
      */
     public function test_create_event() {

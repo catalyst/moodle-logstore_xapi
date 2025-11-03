@@ -64,7 +64,7 @@ final class user_updated_calendar_subscription_test extends \logstore_xapi\xapi_
      * @covers ::attempt_submitted
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

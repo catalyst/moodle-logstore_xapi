@@ -66,7 +66,7 @@ class existing_chapter_viewed_without_parent_test extends \logstore_xapi\xapi_te
      * @covers ::chapter_viewed
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

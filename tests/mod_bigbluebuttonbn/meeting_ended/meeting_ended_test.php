@@ -66,7 +66,7 @@ class meeting_ended_test extends \logstore_xapi\xapi_test_case {
      * @covers ::meeting_ended
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

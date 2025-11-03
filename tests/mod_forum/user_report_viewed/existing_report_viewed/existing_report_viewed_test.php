@@ -66,7 +66,7 @@ class existing_report_viewed_test extends \logstore_xapi\xapi_test_case {
      * @covers ::user_report_viewed
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

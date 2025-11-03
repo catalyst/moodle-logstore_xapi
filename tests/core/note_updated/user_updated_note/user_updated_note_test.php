@@ -64,7 +64,7 @@ final class user_updated_note_test extends \logstore_xapi\xapi_test_case {
      * @covers ::note_updated
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }

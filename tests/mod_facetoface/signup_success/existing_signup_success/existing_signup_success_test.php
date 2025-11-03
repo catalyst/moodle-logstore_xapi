@@ -66,7 +66,7 @@ class existing_signup_success_test extends \logstore_xapi\xapi_test_case {
      * @covers ::signup_success
      * @return void
      */
-    public function test_init() {
+    protected function initialise_defines(): void {
 
     }
 }

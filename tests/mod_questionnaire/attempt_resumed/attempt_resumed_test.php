@@ -63,7 +63,7 @@ final class attempt_resumed_test extends \logstore_xapi\xapi_test_case {
      *
      * @return void
      */
-    public function test_init(): void {
+    protected function initialise_defines(): void {
 
     }
 }
