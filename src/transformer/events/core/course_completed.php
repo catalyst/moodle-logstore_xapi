@@ -42,15 +42,26 @@ function course_completed(array $config, \stdClass $event) {
     $course = $repo->read_record_by_id('course', $event->courseid);
     $lang = utils\get_course_lang($course);
 
+    $gradeitem = $repo->read_record(
+        'grade_items',
+        [
+            'courseid' => $event->courseid,
+            'itemtype' => 'course',
+        ]
+    );
+    $grade = $repo->read_record(
+        'grade_grades',
+        [
+            'userid' => $user->id,
+            'itemid' => $gradeitem->id,
+        ]
+    );
+
     return [[
         'actor' => utils\get_user($config, $user),
-        'verb' => [
-            'id' => 'http://adlnet.gov/expapi/verbs/completed',
-            'display' => [
-                'en' => 'Completed',
-            ],
-        ],
+        'verb' => utils\get_verb('completed', $config, $lang),
         'object' => utils\get_activity\course($config, $course),
+        'result' => utils\get_course_result($config, $gradeitem, $grade),
         'context' => [
             ...utils\get_context_base($config, $event, $lang, $course),
             'contextActivities' => [

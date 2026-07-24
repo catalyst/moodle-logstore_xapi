@@ -47,6 +47,15 @@
         }
       },
       "language": "en"
+    },
+    "result": {
+      "score": {
+        "raw": 2,
+        "min": 0,
+        "max": 2,
+        "scaled": 1
+      },
+      "success": true
     }
   }
 ]
