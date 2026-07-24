@@ -50,6 +50,33 @@ function get_verb(string $verb, array $config, string $lang) {
             ];
             break;
 
+        case 'passed':
+            $output = [
+                'id' => 'https://w3id.org/xapi/tla/verbs/passed',
+                'display' => [
+                    'en' => 'Passed',
+                ],
+            ];
+            break;
+
+        case 'failed':
+            $output = [
+                'id' => 'https://w3id.org/xapi/tla/verbs/failed',
+                'display' => [
+                    'en' => 'Failed',
+                ],
+            ];
+            break;
+
+        case 'answered':
+            $output = [
+                'id' => 'http://adlnet.gov/expapi/verbs/answered',
+                'display' => [
+                    'en' => 'Answered',
+                ],
+            ];
+            break;
+
         case 'loggedin':
             $output = [
                 'id' => 'https://xapi.edlm/profiles/edlm-lms/concepts/verbs/login',

@@ -52,6 +52,7 @@ function get_module_activity_type_mapping(bool $sendjisc) {
         'forum'           => 'https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/forum',
         'glossary'        => 'https://xapi.edlm/profiles/edlm-lms/concepts/activity-types/glossary',
         'h5pactivity'     => 'http://adlnet.gov/expapi/activities/media',
+        'hvp'             => 'http://adlnet.gov/expapi/activities/media',
         'imscp'           => 'https://w3id.org/xapi/cmi5/activitytype/course',
         'label'           => 'https://w3id.org/xapi/acrossx/activities/webpage',
         'lesson'          => 'http://adlnet.gov/expapi/activities/lesson',

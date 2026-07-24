@@ -125,6 +125,8 @@ function get_event_function_map() {
         '\mod_glossary\event\entry_viewed' => 'mod_glossary\entry_viewed',
         '\mod_glossary\event\comment_created' => 'mod_glossary\comment_created',
         '\mod_glossary\event\comment_deleted' => 'mod_glossary\comment_deleted',
+        '\mod_hvp\event\attempt_submitted' => 'mod_hvp\attempt_submitted\handler',
+        '\mod_hvp\event\course_module_viewed' => 'all\course_module_viewed',
         '\mod_lesson\event\lesson_started' => 'mod_lesson\lesson_started',
         '\mod_lesson\event\lesson_resumed' => 'mod_lesson\lesson_resumed',
         '\mod_lesson\event\lesson_restarted' => 'mod_lesson\lesson_restarted',
