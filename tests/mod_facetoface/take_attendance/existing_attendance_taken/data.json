@@ -15,8 +15,8 @@
     {
       "id": 1,
       "sessionid": 1,
-      "timefinish": 123123123,
-      "timestart": 123123123
+      "timefinish": 1433946701,
+      "timestart": 1433946701
     }
   ],
   "facetoface_signups": [
@@ -31,7 +31,7 @@
       "id": 1,
       "signupid": 1,
       "statuscode": 100,
-      "timecreated": 123123123
+      "timecreated": 1433946701
     }
   ],
   "modules": [
