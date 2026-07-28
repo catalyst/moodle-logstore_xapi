@@ -33,5 +33,23 @@
       "firstname": "test_fullname",
       "email": "test@test.com"
     }
+  ],
+  "grade_items": [
+    {
+      "id": 1,
+      "courseid": 2,
+      "itemtype": "course",
+      "grademax": 2,
+      "grademin": 0,
+      "gradepass": 1
+    }
+  ],
+  "grade_grades": [
+    {
+      "id": 1,
+      "itemid": 1,
+      "userid": 1,
+      "finalgrade": 100
+    }
   ]
 }

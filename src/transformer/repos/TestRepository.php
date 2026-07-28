@@ -55,10 +55,15 @@ class TestRepository extends Repository {
         $matchingrecords = [];
 
         foreach ($records as $record) {
+            $matched = true;
             foreach ($query as $key => $value) {
-                if ($record->$key === $value) {
-                    $matchingrecords[] = (object) $record;
+                if ($record->$key !== $value) {
+                    $matched = false;
+                    break;
                 }
+            }
+            if ($matched) {
+                $matchingrecords[] = (object) $record;
             }
         }
 

@@ -15,43 +15,64 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Transform for the quiz attempt viewed event.
+ * Transformer for hvp attempt event.
  *
- * @package   logstore_xapi
- * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
- *            Ryan Smith <https://www.linkedin.com/in/ryan-smith-uk/>
- *            David Pesce <david.pesce@exputo.com>
- * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     logstore_xapi
+ * @author      Rossco Hellmans <rosscohellmans@catalyst-au.net>
+ * @copyright   2025 Catalyst IT Australia Pty Ltd
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace src\transformer\events\mod_quiz;
+namespace src\transformer\events\mod_hvp\attempt_submitted;
 
 use src\transformer\utils as utils;
 
 /**
- * Transformer for quiz attempt viewed event.
+ * Transformer for hvp attempt event.
  *
  * @param array $config The transformer config settings.
  * @param \stdClass $event The event to be transformed.
  * @return array
  */
-function attempt_viewed(array $config, \stdClass $event) {
+function attempt_submitted(array $config, \stdClass $event) {
     $repo = $config['repo'];
     $user = $repo->read_record_by_id('user', $event->userid);
     $course = $repo->read_record_by_id('course', $event->courseid);
     $lang = utils\get_course_lang($course);
+    $coursemodule = $repo->read_record_by_id('course_modules', $event->contextinstanceid);
+    $hvp = $repo->read_record_by_id('hvp', $coursemodule->instance);
+    $gradeitem = $repo->read_record('grade_items', [
+        'itemmodule' => 'hvp',
+        'iteminstance' => $hvp->id,
+    ]);
+    $grade = $repo->read_record('grade_grades', [
+        'itemid' => $gradeitem->id,
+        'userid' => $user->id,
+    ]);
+
+    $gradepass = $gradeitem->gradepass;
+    $finalgrade = $grade->finalgrade;
+
+    $verb = $finalgrade >= $gradepass ?
+        utils\get_verb('passed', $config, $lang) :
+        utils\get_verb('failed', $config, $lang);
 
     return [[
         'actor' => utils\get_user($config, $user),
-        'verb' => utils\get_verb('viewed', $config, $lang),
-        'object' => utils\get_activity\quiz_attempt($config, $event->objectid, $event->contextinstanceid),
+        'verb' => $verb,
+        'object' => utils\get_activity\course_module(
+            $config,
+            $course,
+            $event->contextinstanceid
+        ),
+        'result' => utils\get_hvp_attempt_result($config, $gradeitem, $grade),
         'context' => [
-            ...utils\get_context_base($config, $event, $lang, $course),
+            'language' => $lang,
+            'extensions' => utils\extensions\base($config, $event, $course),
             'contextActivities' => [
                 'parent' => utils\context_activities\get_parent(
                     $config,
-                    $event->contextinstanceid,
-                    true
+                    $event->contextinstanceid
                 ),
                 'category' => [
                     utils\get_activity\site($config),

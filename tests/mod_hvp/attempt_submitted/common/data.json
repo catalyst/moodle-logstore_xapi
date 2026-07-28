@@ -1,0 +1,56 @@
+{
+  "grade_items": [
+    {
+      "id": 1,
+      "grademax": 100,
+      "grademin": 0,
+      "gradepass": 50,
+      "iteminstance": 1,
+      "itemmodule": "hvp"
+    }
+  ],
+  "grade_grades": [
+    {
+      "itemid": 1,
+      "userid": 1,
+      "rawgrade": 50,
+      "finalgrade": 100
+    }
+  ],
+  "modules": [
+    {
+      "id": 1,
+      "name": "hvp"
+    }
+  ],
+  "hvp": [
+    {
+      "id": 1,
+      "name": "test_hvp_name"
+    }
+  ],
+  "hvp_xapi_results": [
+    {
+      "id": 1,
+      "content_id": 1,
+      "user_id": 1,
+      "interaction_type": "other",
+      "raw_score": 40,
+      "max_score": 100,
+      "description": "test_description",
+      "correct_responses_pattern": "test_correct_responses_pattern",
+      "response": "test_response_1"
+    },
+    {
+      "id": 2,
+      "content_id": 1,
+      "user_id": 1,
+      "interaction_type": "other",
+      "raw_score": 50,
+      "max_score": 100,
+      "description": "test_description",
+      "correct_responses_pattern": "test_correct_responses_pattern",
+      "response": "test_response_2"
+    }
+  ]
+}
