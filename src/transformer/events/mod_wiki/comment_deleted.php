@@ -25,7 +25,7 @@
 
 namespace src\transformer\events\mod_wiki;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer fn for wiki discussion comment deleted event.
@@ -48,7 +48,7 @@ function comment_deleted(array $config, \stdClass $event) {
     $course = $repo->read_record_by_id('course', $event->courseid);
     $wikipage = $repo->read_record_by_id(
         'wiki_pages',
-        (int) unserialize($event->other)['itemid']
+        (int) utils\decode_other($event->other)['itemid']
     );
     $lang = utils\get_course_lang($course);
 

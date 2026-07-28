@@ -26,7 +26,7 @@
 
 namespace src\transformer\events\mod_scorm;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer for SCORM status submitted event.
@@ -42,14 +42,14 @@ function status_submitted(array $config, \stdClass $event) {
     $scorm = $repo->read_record_by_id('scorm', $event->objectid);
     $lang = utils\get_course_lang($course);
 
-    $unserializedcmi = unserialize($event->other);
-    $attempt = $unserializedcmi['attemptid'];
-    $scormscoestracks = $repo->read_records('scorm_scoes_track', [
-        'userid' => $user->id,
-        'scormid' => $event->objectid,
-        'scoid' => $event->contextinstanceid,
-        'attempt' => $unserializedcmi['attemptid'],
-    ]);
+    $unserializedcmi = utils\decode_other($event->other);
+    $scormscoestracks = utils\get_scorm_tracks(
+        $config,
+        $user->id,
+        $event->objectid,
+        $event->contextinstanceid,
+        $unserializedcmi['attemptid']
+    );
 
     return [[
         'actor' => utils\get_user($config, $user),

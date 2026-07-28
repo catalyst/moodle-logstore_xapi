@@ -117,17 +117,17 @@ class store extends php_obj implements log_writer {
             $where[] = 'objectid IS NULL';
         }
 
-        if (!empty($event->timecreated)) {
+        if (isset($event->timecreated) && $event->timecreated !== null) {
             $sqlparams['timecreated'] = $event->timecreated;
             $where[] = 'timecreated = :timecreated';
         }
 
-        if (!empty($event->userid)) {
+        if (isset($event->userid) && $event->userid !== null) {
             $sqlparams['userid'] = $event->userid;
             $where[] = 'userid = :userid';
         }
 
-        if (!empty($event->anonymous)) {
+        if (isset($event->anonymous) && $event->anonymous !== null) {
             $sqlparams['anonymous'] = $event->anonymous;
             $where[] = 'anonymous = :anonymous';
         }
@@ -152,7 +152,9 @@ class store extends php_obj implements log_writer {
 
     /**
      * Insert events in bulk to the database. Overrides helper_writer.
+     *
      * @param array $events raw event data
+     * @return void
      */
     protected function insert_event_entries($events) {
         global $DB;
@@ -214,6 +216,7 @@ class store extends php_obj implements log_writer {
      * Take successful events and save each using logstore_xapi_add_event_to_sent_log.
      *
      * @param array $events raw events data
+     * @return void
      */
     private function save_sent_events(array $events) {
         $successfulevents = logstore_xapi_get_successful_events($events);
@@ -271,7 +274,6 @@ class store extends php_obj implements log_writer {
                 'send_username' => $this->get_config('send_username', false),
                 'account_homepage' => $this->get_config('account_homepage', $CFG->wwwroot),
                 'context_platform' => $this->get_config('context_platform', 'Moodle'),
-                'send_jisc_data' => $this->get_config('send_jisc_data', false),
                 'session_id' => sesskey(),
                 'plugin_url' => 'https://github.com/xAPI-vle/moodle-logstore_xapi',
                 'plugin_version' => $plugin->release,
@@ -285,6 +287,8 @@ class store extends php_obj implements log_writer {
                 'lrs_password' => $this->get_config('password', ''),
                 'lrs_max_batch_size' => $this->get_max_batch_size(),
                 'lrs_resend_failed_batches' => $this->get_config('resendfailedbatches', false),
+                'lrs_ssl_verification' => $this->get_config('sslverification', true),
+                'lrs_ssl_cabundle' => $this->get_config('sslcabundle', ''),
             ],
         ];
 

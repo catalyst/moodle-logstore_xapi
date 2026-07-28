@@ -37,6 +37,11 @@ define('XAPI_REPORT_SOURCE_LOG', 'logstore_xapi_log');
 define('XAPI_REPORT_SOURCE_FAILED', 'logstore_xapi_failed_log');
 define('XAPI_REPORT_SOURCE_HISTORICAL', 'logstore_standard_log');
 
+// Columns of the failed log that the error report may build filter options
+// from. Used as an allow-list, since a column name cannot be bound as a query
+// parameter and has to be interpolated into the SQL.
+define('XAPI_REPORT_FILTER_COLUMNS', ['errortype', 'response']);
+
 // Error types.
 define('XAPI_REPORT_ERRORTYPE_NETWORK', 101);
 define('XAPI_REPORT_ERRORTYPE_RECIPE', 400);
@@ -75,21 +80,31 @@ function logstore_xapi_get_cohorts() {
 /**
  * Get the selected cohorts from the settings.
  *
- * @return array Returns an array of selected cohort ids if the cohort is still visible.
- * The cohort might have been made invisible or removed since the selection was made.
+ * Only returns IDs for cohorts that still exist and are visible, filtering out
+ * any cohorts that have been deleted or made invisible since the selection was saved.
+ *
+ * @return array Returns an array of selected cohort ids.
  */
 function logstore_xapi_get_selected_cohorts() {
-    $arrvisible = logstore_xapi_get_cohorts();
+    global $DB;
+
     $selected = get_config('logstore_xapi', 'cohorts');
 
-    $arrselected = explode(",", $selected);
-    $arr = [];
-    foreach ($arrselected as $arrselection) {
-        if (array_key_exists($arrselection, $arrvisible)) {
-            $arr[] = $arrselection;
-        }
+    if (empty($selected)) {
+        return [];
     }
-    return $arr;
+
+    $ids = array_filter(array_map('intval', explode(',', $selected)));
+
+    if (empty($ids)) {
+        return [];
+    }
+
+    [$insql, $inparams] = $DB->get_in_or_equal($ids, SQL_PARAMS_NAMED);
+    $inparams['visible'] = 1;
+    $records = $DB->get_records_select('cohort', "id $insql AND visible = :visible", $inparams, '', 'id');
+
+    return array_map('strval', array_keys($records));
 }
 
 /**
@@ -148,12 +163,21 @@ function logstore_xapi_get_users_for_notifications() {
 /**
  * Gets the unique column values
  *
- * @param string $column
+ * The column name is interpolated into SQL, since identifiers cannot be bound
+ * as parameters. It is checked against a fixed allow-list so that a future
+ * caller cannot turn this helper into an injection point.
+ *
+ * @param string $column One of the columns listed in XAPI_REPORT_FILTER_COLUMNS.
  * @return array
+ * @throws coding_exception If the column is not one this helper supports.
  * @throws dml_exception
  */
 function logstore_xapi_get_distinct_options_from_failed_table($column) {
     global $DB;
+
+    if (!in_array($column, XAPI_REPORT_FILTER_COLUMNS, true)) {
+        throw new coding_exception('Unsupported filter column: ' . $column);
+    }
 
     $options = [0 => get_string('any')];
     $results = $DB->get_fieldset_select('logstore_xapi_failed_log', "DISTINCT $column", '');
@@ -268,10 +292,10 @@ function logstore_xapi_get_info_string($row) {
  * @return array
  */
 function logstore_xapi_get_successful_events($events) {
-    $loadedevents = array_filter($events, function($loadedevent) {
+    $loadedevents = array_filter($events, function ($loadedevent) {
         return $loadedevent['loaded'] === true;
     });
-    $successfulevents = array_map(function($loadedevent) {
+    $successfulevents = array_map(function ($loadedevent) {
         return $loadedevent['event'];
     }, $loadedevents);
     return $successfulevents;
@@ -281,6 +305,7 @@ function logstore_xapi_get_successful_events($events) {
  * Take event data and add to the sent log if it doesn't exist already.
  *
  * @param stdObj $event raw event data
+ * @return void
  */
 function logstore_xapi_add_event_to_sent_log($event) {
     global $DB;
@@ -331,6 +356,7 @@ function logstore_xapi_get_event_ids($loadedevents) {
  * Delete processed events.
  *
  * @param array $events raw events data
+ * @return void
  */
 function logstore_xapi_delete_processed_events($events) {
     global $DB;
@@ -342,6 +368,7 @@ function logstore_xapi_delete_processed_events($events) {
  * Log the number of events using mtrace.
  *
  * @param array $events raw events data
+ * @return void
  */
 function logstore_xapi_record_successful_events($events) {
     mtrace(count(logstore_xapi_get_successful_events($events)) . " " . get_string('successful_events', 'logstore_xapi'));
@@ -351,6 +378,7 @@ function logstore_xapi_record_successful_events($events) {
  * Take successful events and save each using logstore_xapi_add_event_to_sent_log.
  *
  * @param array $events raw events data
+ * @return void
  */
 function logstore_xapi_save_sent_events(array $events) {
     $successfulevents = logstore_xapi_get_successful_events($events);
@@ -406,4 +434,17 @@ function logstore_xapi_get_type_from_table($table) {
         default:
             return XAPI_IMPORT_TYPE_LIVE;
     }
+}
+
+/**
+ * Security checks contributed to the site security report.
+ *
+ * Called by \core\check\manager::get_security_checks().
+ *
+ * @return array of \core\check\check
+ */
+function logstore_xapi_security_checks() {
+    return [
+        new \logstore_xapi\check\ssl_verification(),
+    ];
 }

@@ -26,8 +26,6 @@
 
 namespace src\transformer\utils\extensions;
 
-use src\transformer\utils as utils;
-
 /**
  * Transformer utility for base xAPI extensions.
  *
@@ -36,12 +34,6 @@ use src\transformer\utils as utils;
  * @param object $course The course object.
  * @return array
  */
-function base(array $config, \stdClass $event, $course=null) {
-    $base = utils\extensions\info($config, $event);
-
-    if (utils\is_enabled_config($config, 'send_jisc_data')) {
-        $base = array_merge($base, utils\extensions\jisc($config, $event, $course));
-    }
-
-    return $base;
+function base(array $config, \stdClass $event, $course = null) {
+    return info($config, $event);
 }

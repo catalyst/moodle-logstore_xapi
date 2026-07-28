@@ -24,7 +24,7 @@
 
 namespace src\transformer\events\mod_survey;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer for survey report viewed event.
@@ -39,7 +39,7 @@ function report_viewed(array $config, \stdClass $event) {
     $course = $repo->read_record_by_id('course', $event->courseid);
     $survey = $repo->read_record_by_id('survey', $event->objectid);
     $lang = utils\get_course_lang($course);
-    $action = unserialize($event->other)['action'];
+    $action = utils\decode_other($event->other)['action'];
 
     return[[
         'actor' => utils\get_user($config, $user),

@@ -24,7 +24,7 @@
 
 namespace src\transformer\utils\get_activity;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer utility for retrieving (lesson question page) activities.
@@ -40,7 +40,7 @@ function lesson_question_page(array $config, \stdClass $course, \stdClass $lesso
     $repo = $config['repo'];
     $courselang = utils\get_course_lang($course);
 
-    $entryurl = $config['app_url'].'/mod/lesson/view.php?id='.$cmid.'&pageid='.$page->id;
+    $entryurl = $config['app_url'] . '/mod/lesson/view.php?id=' . $cmid . '&pageid=' . $page->id;
 
     $activity = [
         ...base(),
@@ -48,15 +48,15 @@ function lesson_question_page(array $config, \stdClass $course, \stdClass $lesso
     ];
 
     $answers = $repo->read_records('lesson_answers', ['pageid' => $page->id]);
-    $correctanswers = array_filter($answers, function($a) {
+    $correctanswers = array_filter($answers, function ($a) {
         return ($a->score > 0);
     });
 
     switch ($page->qtype) {
-        case LESSON_PAGE_SHORTANSWER:
+        case 1: // LESSON_PAGE_SHORTANSWER.
             $correctresponses = array_values(
                 array_map(
-                    function($answer) {
+                    function ($answer) {
                         return utils\get_string_html_removed($answer->response);
                     },
                     $correctanswers
@@ -70,7 +70,7 @@ function lesson_question_page(array $config, \stdClass $course, \stdClass $lesso
                 $correctresponses
             );
             break;
-        case LESSON_PAGE_ESSAY:
+        case 10: // LESSON_PAGE_ESSAY.
             $activity['definition'] = utils\get_activity\definition\cmi\long_fill_in(
                 $config,
                 $page->title,
@@ -78,11 +78,11 @@ function lesson_question_page(array $config, \stdClass $course, \stdClass $lesso
                 $courselang
             );
             break;
-        case LESSON_PAGE_TRUEFALSE:
-        case LESSON_PAGE_MULTICHOICE:
+        case 2: // LESSON_PAGE_TRUEFALSE.
+        case 3: // LESSON_PAGE_MULTICHOICE.
             $choices = array_values(
                 array_map(
-                    function($answer) {
+                    function ($answer) {
                         return utils\get_string_html_removed($answer->response);
                     },
                     $answers
@@ -90,7 +90,7 @@ function lesson_question_page(array $config, \stdClass $course, \stdClass $lesso
             );
             $correctchoices = array_values(
                 array_map(
-                    function($answer) {
+                    function ($answer) {
                         return utils\get_string_html_removed($answer->response);
                     },
                     $correctanswers
@@ -105,7 +105,7 @@ function lesson_question_page(array $config, \stdClass $course, \stdClass $lesso
                 $correctchoices
             );
             break;
-        case LESSON_PAGE_MATCHING:
+        case 5: // LESSON_PAGE_MATCHING.
             $source = [];
             $target = [];
             foreach ($answers as $a) {
@@ -123,7 +123,7 @@ function lesson_question_page(array $config, \stdClass $course, \stdClass $lesso
                 $courselang
             );
             break;
-        case LESSON_PAGE_NUMERICAL:
+        case 8: // LESSON_PAGE_NUMERICAL.
             // XAPI Numerical can only have one discrete correct response, or a
             // range but lessons do not support ranges, so taking first correct
             // answer to cover most cases.

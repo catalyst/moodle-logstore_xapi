@@ -24,7 +24,7 @@
 
 namespace src\transformer\events\mod_quiz;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transform for the quiz question manually graded event.
@@ -42,24 +42,30 @@ function question_manually_graded(array $config, \stdClass $event) {
         'attemptid' => $attemptid,
         'quizid' => $quizid,
         'slot' => $slot,
-    ] = unserialize($event->other);
+    ] = utils\decode_other($event->other);
     $attempt = $repo->read_record_by_id('quiz_attempts', (int) $attemptid);
     $quiz = $repo->read_record_by_id('quiz', (int) $quizid);
     $user = $repo->read_record_by_id('user', $attempt->userid);
     $questionattempts = $repo->read_records(
         'question_attempts',
-        ['questionusageid' => (int) $attemptid],
+        ['questionusageid' => (int) $attempt->uniqueid],
     );
+    if (empty($questionattempts)) {
+        return [];
+    }
     $questionattempt = reset($questionattempts);
     $questionattemptsteps = $repo->read_records(
         'question_attempt_steps',
         ['questionattemptid' => $questionattempt->id],
         'sequencenumber DESC'
     );
+    if (empty($questionattemptsteps)) {
+        return [];
+    }
     $step = reset($questionattemptsteps);
-    $rawscore = (float) $step->fraction;
-    $minscore = (float) $questionattempt->minfraction;
-    $maxscore = (float) $questionattempt->maxfraction;
+    $rawscore = (float) ($step->fraction ?? 0);
+    $minscore = (float) ($questionattempt->minfraction ?? 0);
+    $maxscore = (float) ($questionattempt->maxfraction ?? 0);
 
     return [[
         'actor' => utils\get_user($config, $user),

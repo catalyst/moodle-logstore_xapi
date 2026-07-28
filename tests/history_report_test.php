@@ -20,7 +20,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/admin/tool/log/store/xapi/tests/enchancement_jisc_skeleton.php');
+require_once($CFG->dirroot . '/admin/tool/log/store/xapi/tests/logstore_test_skeleton.php');
 require_once($CFG->dirroot . '/admin/tool/log/store/xapi/classes/form/reportfilter_form.php');
 
 /**
@@ -31,7 +31,7 @@ require_once($CFG->dirroot . '/admin/tool/log/store/xapi/classes/form/reportfilt
  * @copyright  2020 Learning Pool Ltd (http://learningpool.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class history_report_test extends enchancement_jisc_skeleton {
+final class history_report_test extends logstore_test_skeleton {
     /**
      * @var array Simulated submitted reportfilter_form data for historic report.
      */
@@ -71,6 +71,7 @@ final class history_report_test extends enchancement_jisc_skeleton {
      * Submit form and validate form data.
      *
      * @covers \form\tool_logstore_xapi_reportfilter_form
+     * @return void
      */
     public function test_single_element(): void {
         $this->markTestSkipped('must be revisited.');
@@ -94,6 +95,7 @@ final class history_report_test extends enchancement_jisc_skeleton {
      * Submit form and validate form data.
      *
      * @covers \form\tool_logstore_xapi_reportfilter_form
+     * @return void
      */
     public function test_multiple_elements(): void {
         $this->markTestSkipped('must be revisited.');

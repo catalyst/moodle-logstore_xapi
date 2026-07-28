@@ -24,7 +24,7 @@
 
 namespace src\transformer\events\tool_certificate;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transforms certificate revoked event to an "Achieved" xapi event
@@ -37,9 +37,9 @@ function certificate_revoked(array $config, \stdClass $event) {
     $repo = $config['repo'];
     $user = $repo->read_record_by_id('user', $event->relateduserid);
     $revoker = $repo->read_record_by_id('user', $event->userid);
-    $code = unserialize($event->other)['code'];
+    $code = utils\decode_other($event->other)['code'];
     $course = ($event->courseid !== 0)
-        ? $repo->read_record_by_id('course', $issue->courseid)
+        ? $repo->read_record_by_id('course', $event->courseid)
         : null;
     $lang = is_null($course)
         ? $config['source_lang']

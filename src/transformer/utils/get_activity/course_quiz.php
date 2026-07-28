@@ -26,7 +26,7 @@
 
 namespace src\transformer\utils\get_activity;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer utility for retrieving (course quiz) activities.
@@ -37,11 +37,5 @@ use src\transformer\utils as utils;
  * @return array
  */
 function course_quiz(array $config, \stdClass $course, string $cmid) {
-    $xapiobject = utils\get_activity\course_module($config, $course, $cmid);
-
-    // JISC specific activity type.
-    if (utils\is_enabled_config($config, 'send_jisc_data')) {
-        $xapiobject['definition']['type'] = 'http://xapi.jisc.ac.uk/activities/quiz';
-    }
-    return $xapiobject;
+    return utils\get_activity\course_module($config, $course, $cmid);
 }

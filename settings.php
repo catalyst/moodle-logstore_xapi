@@ -30,116 +30,244 @@ require_once(__DIR__ . '/src/autoload.php');
 require_once($CFG->dirroot . '/admin/tool/log/store/xapi/lib.php');
 
 if ($hassiteconfig) {
-    // Endpoint.
-    $settings->add(new admin_setting_configtext('logstore_xapi/endpoint',
-        get_string('endpoint', 'logstore_xapi'), '',
-        'http://example.com/endpoint/location/', PARAM_URL));
-    // Username.
-    $settings->add(new admin_setting_configtext('logstore_xapi/username',
-        get_string('username', 'logstore_xapi'), '', 'username', PARAM_TEXT));
-    // Key or password.
-    $settings->add(new admin_setting_configtext('logstore_xapi/password',
-        get_string('password', 'logstore_xapi'), '', 'password', PARAM_TEXT));
+    // Create a subcategory under Logging to group all xAPI pages together.
+    $ADMIN->add('logging', new admin_category('logstorexapi', get_string('pluginname', 'logstore_xapi')));
 
-    // Switch background batch mode on.
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/backgroundmode',
+    // Rename the settings page so it shows as "Settings" rather than repeating "Logstore xAPI".
+    // Also force it visible — the core loader hides it when the plugin is disabled, but inside
+    // our own subcategory it should always be accessible.
+    $settings->visiblename = get_string('settings', 'logstore_xapi');
+    $settings->hidden = false;
+
+    // Show a warning if the logstore is not enabled.
+    $enabledstores = get_config('tool_log', 'enabled_stores');
+    if (empty($enabledstores) || !in_array('logstore_xapi', explode(',', $enabledstores))) {
+        $manageurl = new moodle_url('/admin/settings.php', ['section' => 'managelogging']);
+        $settings->add(new admin_setting_heading(
+            'logstore_xapi_notenabled',
+            '',
+            html_writer::div(
+                get_string('logstore_not_enabled', 'logstore_xapi', $manageurl->out()),
+                'alert alert-warning'
+            )
+        ));
+    }
+
+    // LRS Connection.
+    $settings->add(new admin_setting_heading(
+        'lrsconnection',
+        get_string('heading_lrsconnection', 'logstore_xapi'),
+        get_string('heading_lrsconnection_desc', 'logstore_xapi')
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'logstore_xapi/endpoint',
+        get_string('endpoint', 'logstore_xapi'),
+        '',
+        'https://example.com/endpoint/location/',
+        PARAM_URL,
+        60
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'logstore_xapi/username',
+        get_string('username', 'logstore_xapi'),
+        '',
+        '',
+        PARAM_TEXT,
+        40
+    ));
+
+    $passwordsetting = new admin_setting_configpasswordunmask(
+        'logstore_xapi/password',
+        get_string('password', 'logstore_xapi'),
+        '',
+        ''
+    );
+    $passwordsetting->size = 40;
+    $settings->add($passwordsetting);
+
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/sslverification',
+        get_string('sslverification', 'logstore_xapi'),
+        get_string('sslverification_desc', 'logstore_xapi'),
+        1
+    ));
+
+    $settings->add(new admin_setting_configfile(
+        'logstore_xapi/sslcabundle',
+        get_string('sslcabundle', 'logstore_xapi'),
+        get_string('sslcabundle_desc', 'logstore_xapi'),
+        ''
+    ));
+
+    // Processing and batches.
+    $settings->add(new admin_setting_heading(
+        'processingbatches',
+        get_string('heading_processingbatches', 'logstore_xapi'),
+        get_string('heading_processingbatches_desc', 'logstore_xapi')
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/backgroundmode',
         get_string('backgroundmode', 'logstore_xapi'),
-        get_string('backgroundmode_desc', 'logstore_xapi'), 1));
+        get_string('backgroundmode_desc', 'logstore_xapi'),
+        1
+    ));
 
-    $settings->add(new admin_setting_configtext('logstore_xapi/maxbatchsize',
+    $settings->add(new admin_setting_configtext(
+        'logstore_xapi/maxbatchsize',
         get_string('maxbatchsize', 'logstore_xapi'),
-        get_string('maxbatchsize_desc', 'logstore_xapi'), 30, PARAM_INT));
+        get_string('maxbatchsize_desc', 'logstore_xapi'),
+        30,
+        PARAM_INT
+    ));
 
-    // Maximum batch size for failed records being replayed.
-    $settings->add(new admin_setting_configtext('logstore_xapi/maxbatchsizeforfailed',
+    $settings->add(new admin_setting_configtext(
+        'logstore_xapi/maxbatchsizeforfailed',
         get_string('maxbatchsizeforfailed', 'logstore_xapi'),
-        get_string('maxbatchsizeforfailed_desc', 'logstore_xapi'), 15, PARAM_INT));
+        get_string('maxbatchsizeforfailed_desc', 'logstore_xapi'),
+        15,
+        PARAM_INT
+    ));
 
-    // Maximum batch size for historical records.
-    $settings->add(new admin_setting_configtext('logstore_xapi/maxbatchsizeforhistorical',
+    $settings->add(new admin_setting_configtext(
+        'logstore_xapi/maxbatchsizeforhistorical',
         get_string('maxbatchsizeforhistorical', 'logstore_xapi'),
-        get_string('maxbatchsizeforhistorical_desc', 'logstore_xapi'), 30, PARAM_INT));
+        get_string('maxbatchsizeforhistorical_desc', 'logstore_xapi'),
+        30,
+        PARAM_INT
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/resendfailedbatches',
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/resendfailedbatches',
         get_string('resendfailedbatches', 'logstore_xapi'),
-        get_string('resendfailedbatches_desc', 'logstore_xapi'), 0));
+        get_string('resendfailedbatches_desc', 'logstore_xapi'),
+        0
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/mbox',
+    // Actor identification.
+    $settings->add(new admin_setting_heading(
+        'actoridentification',
+        get_string('heading_actoridentification', 'logstore_xapi'),
+        get_string('heading_actoridentification_desc', 'logstore_xapi')
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/mbox',
         get_string('mbox', 'logstore_xapi'),
-        get_string('mbox_desc', 'logstore_xapi'), 0));
+        get_string('mbox_desc', 'logstore_xapi'),
+        0
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/send_name',
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/send_name',
         get_string('send_name', 'logstore_xapi'),
-        get_string('send_name_desc', 'logstore_xapi'), 1));
+        get_string('send_name_desc', 'logstore_xapi'),
+        1
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/shortcourseid',
-        get_string('shortcourseid', 'logstore_xapi'),
-        get_string('shortcourseid_desc', 'logstore_xapi'), 0));
-
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/sendidnumber',
-        get_string('sendidnumber', 'logstore_xapi'),
-        get_string('sendidnumber_desc', 'logstore_xapi'), 0));
-
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/send_username',
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/send_username',
         get_string('send_username', 'logstore_xapi'),
-        get_string('send_username_desc', 'logstore_xapi'), 0));
+        get_string('send_username_desc', 'logstore_xapi'),
+        0
+    ));
 
-    $settings->add(new admin_setting_configtext('logstore_xapi/account_homepage',
+    $settings->add(new admin_setting_configtext(
+        'logstore_xapi/account_homepage',
         get_string('account_homepage', 'logstore_xapi'),
-        get_string('account_homepage_desc', 'logstore_xapi'), $CFG->wwwroot, PARAM_TEXT));
+        get_string('account_homepage_desc', 'logstore_xapi'),
+        $CFG->wwwroot,
+        PARAM_TEXT
+    ));
 
-    $settings->add(new admin_setting_configtext('logstore_xapi/context_platform',
+    // Statement content.
+    $settings->add(new admin_setting_heading(
+        'statementcontent',
+        get_string('heading_statementcontent', 'logstore_xapi'),
+        get_string('heading_statementcontent_desc', 'logstore_xapi')
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/shortcourseid',
+        get_string('shortcourseid', 'logstore_xapi'),
+        get_string('shortcourseid_desc', 'logstore_xapi'),
+        0
+    ));
+
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/sendidnumber',
+        get_string('sendidnumber', 'logstore_xapi'),
+        get_string('sendidnumber_desc', 'logstore_xapi'),
+        0
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'logstore_xapi/context_platform',
         get_string('context_platform', 'logstore_xapi'),
-        get_string('context_platform_desc', 'logstore_xapi'), 'Moodle', PARAM_TEXT));
+        get_string('context_platform_desc', 'logstore_xapi'),
+        'Moodle',
+        PARAM_TEXT
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/send_jisc_data',
-        get_string('send_jisc_data', 'logstore_xapi'),
-        get_string('send_jisc_data_desc', 'logstore_xapi'), 0));
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/sendresponsechoices',
+        get_string('send_response_choices', 'logstore_xapi'),
+        get_string('send_response_choices_desc', 'logstore_xapi'),
+        0
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/sendresponsechoices',
-       get_string('send_response_choices', 'logstore_xapi'),
-       get_string('send_response_choices_desc', 'logstore_xapi'), 0));
+    // Notifications.
+    $settings->add(new admin_setting_heading(
+        'notifications',
+        get_string('heading_notifications', 'logstore_xapi'),
+        get_string('heading_notifications_desc', 'logstore_xapi')
+    ));
 
-    // Control sending notifications.
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/enablesendingnotifications',
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/enablesendingnotifications',
         get_string('enablesendingnotifications', 'logstore_xapi'),
-        get_string('enablesendingnotifications_desc', 'logstore_xapi'), 1));
+        get_string('enablesendingnotifications_desc', 'logstore_xapi'),
+        1
+    ));
 
-    // Set threshold for sending notifications.
-    $settings->add(new admin_setting_configtext('logstore_xapi/errornotificationtrigger',
+    $settings->add(new admin_setting_configtext(
+        'logstore_xapi/errornotificationtrigger',
         get_string('errornotificationtrigger', 'logstore_xapi'),
-        get_string('errornotificationtrigger_desc', 'logstore_xapi'), 10, PARAM_INT));
+        get_string('errornotificationtrigger_desc', 'logstore_xapi'),
+        10,
+        PARAM_INT
+    ));
 
-    // Cohorts.
-    $settings->add(new admin_setting_heading('cohorts',
-        get_string('cohorts', 'logstore_xapi'),
-        get_string('cohorts_help', 'logstore_xapi')));
+    $settings->add(new \logstore_xapi\admin\setting_cohort_selector(
+        'logstore_xapi/cohorts',
+        get_string('includecohorts', 'logstore_xapi'),
+        '',
+        ''
+    ));
 
-    $cohorts = logstore_xapi_get_cohorts();
-    $arrcohorts = [];
-    foreach ($cohorts as $cohort) {
-        $arrcohorts[$cohort->id] = $cohort->name;
-    }
-
-    // If there are no cohorts then do not display this option,
-    // especially when displaying the settings page for the first time after an upgrade.
-    if (count($arrcohorts) != 0) {
-        $settings->add(new admin_setting_configmulticheckbox('logstore_xapi/cohorts',
-            get_string('includecohorts', 'logstore_xapi'), '', '', $arrcohorts));
-    }
-
-    // Additional email addresses.
-    $settings->add(new admin_setting_configtext('logstore_xapi/send_additional_email_addresses',
+    $settings->add(new admin_setting_configtext(
+        'logstore_xapi/send_additional_email_addresses',
         get_string('send_additional_email_addresses', 'logstore_xapi'),
-        get_string('send_additional_email_addresses_desc', 'logstore_xapi'), '', PARAM_TEXT));
+        get_string('send_additional_email_addresses_desc', 'logstore_xapi'),
+        '',
+        PARAM_TEXT
+    ));
 
     // Filters.
-    $settings->add(new admin_setting_heading('filters',
+    $settings->add(new admin_setting_heading(
+        'filters',
         get_string('filters', 'logstore_xapi'),
-        get_string('filters_help', 'logstore_xapi')));
+        get_string('filters_help', 'logstore_xapi')
+    ));
 
-    $settings->add(new admin_setting_configcheckbox('logstore_xapi/logguests',
-        get_string('logguests', 'logstore_xapi'), '', '0'));
+    $settings->add(new admin_setting_configcheckbox(
+        'logstore_xapi/logguests',
+        get_string('logguests', 'logstore_xapi'),
+        '',
+        '0'
+    ));
 
     $menuroutes = [];
     $eventfunctionmap = \src\transformer\get_event_function_map();
@@ -155,21 +283,23 @@ if ($hassiteconfig) {
         $menuroutes
     ));
 
-    // The xAPI Error Log page.
-    $errorreport = new admin_externalpage(
+    // Add settings page and report pages to the subcategory.
+    $ADMIN->add('logstorexapi', $settings);
+
+    $ADMIN->add('logstorexapi', new admin_externalpage(
         'logstorexapierrorlog',
         get_string('logstorexapierrorlog', 'logstore_xapi'),
         new moodle_url('/admin/tool/log/store/xapi/report.php', ['id' => XAPI_REPORT_ID_ERROR]),
         ['logstore/xapi:viewerrorlog']
-    );
-    $ADMIN->add('logging', $errorreport);
+    ));
 
-    // The xAPI Historic Log page.
-    $historicreport = new admin_externalpage(
+    $ADMIN->add('logstorexapi', new admin_externalpage(
         'logstorexapihistoriclog',
         get_string('logstorexapihistoriclog', 'logstore_xapi'),
         new moodle_url('/admin/tool/log/store/xapi/report.php', ['id' => XAPI_REPORT_ID_HISTORIC]),
         ['logstore/xapi:managehistoric']
-    );
-    $ADMIN->add('logging', $historicreport);
+    ));
+
+    // Prevent the core plugin loader from adding the settings page directly to 'logging' again.
+    $settings = null;
 }
