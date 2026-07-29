@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace logstore_xapi\tool_certificate;
+namespace logstore_xapi\tool_certificate\certificate_revoked;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -29,8 +29,7 @@ require_once($CFG->dirroot . '/admin/tool/log/store/xapi/tests/xapi_test_case.ph
  * @copyright Milt Reder <milt@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class certificate_revoked_test extends \logstore_xapi\xapi_test_case {
-
+final class certificate_revoked_test extends \logstore_xapi\xapi_test_case {
     /**
      * Retrieve the directory of the unit test.
      *
@@ -64,7 +63,6 @@ class certificate_revoked_test extends \logstore_xapi\xapi_test_case {
      * @covers ::certificate_revoked
      * @return void
      */
-    protected function initialise_defines(): void {
-
+    public function test_init(): void {
     }
 }

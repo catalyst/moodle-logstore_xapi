@@ -25,7 +25,7 @@
 
 namespace src\transformer\events\core;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer for questions_imported event.
@@ -40,7 +40,7 @@ function questions_imported(array $config, \stdClass $event) {
     $course = $repo->read_record_by_id('course', $event->courseid);
     $lang = utils\get_course_lang($course);
 
-    $info = unserialize($event->other);
+    $info = utils\decode_other($event->other);
 
     return [[
         'actor' => utils\get_user($config, $user),

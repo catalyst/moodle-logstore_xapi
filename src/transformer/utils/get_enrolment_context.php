@@ -24,7 +24,7 @@
 
 namespace src\transformer\utils;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Return a context object for a user enrolment.
@@ -44,7 +44,7 @@ function get_enrolment_context(
     \stdClass $user,
     string $lang
 ) {
-    $info = unserialize($event->other);
+    $info = utils\decode_other($event->other);
 
     $ctx = [
         'language' => $lang,

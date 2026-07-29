@@ -24,7 +24,7 @@
 
 namespace src\transformer\events\tool_usertours;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer for tour ended event.
@@ -47,7 +47,7 @@ function tour_ended(array $config, \stdClass $event) {
             ],
         ],
         'object' => [
-            'id' => unserialize($event->other)['pageurl'],
+            'id' => utils\decode_other($event->other)['pageurl'],
             'objectType' => 'Activity',
         ],
         'context' => [

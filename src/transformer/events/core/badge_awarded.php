@@ -23,7 +23,7 @@
  */
 
 namespace src\transformer\events\core;
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transforms badge_awarded event to an "Achieved" xAPI event.
@@ -53,7 +53,7 @@ function badge_awarded(array $config, \stdClass $event) {
        utils\get_course_lang($course) :
        $config['source_lang']);
 
-    $other = unserialize($event->other);
+    $other = utils\decode_other($event->other);
     $issuedid = $other['badgeissuedid'];
 
     $manual = $repo->read_record_by_id('badge_manual_award', $issuedid);

@@ -25,7 +25,7 @@
 
 namespace src\transformer\events\debug;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer for Any Event to emit debug xAPI statements.
@@ -60,7 +60,7 @@ function debug_event(array $config, \stdClass $event) {
         'context' => [
             'extensions' => [
                 'http://www.yetanalytics.com/debug_objects/event' => $event,
-                'http://www.yetanalytics.com/debug_objects/event_other' => unserialize($event->other),
+                'http://www.yetanalytics.com/debug_objects/event_other' => utils\decode_other($event->other),
                 'http://www.yetanalytics.com/debug_objects/event_object' => $eventobject,
             ],
         ],

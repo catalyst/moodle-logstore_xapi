@@ -24,7 +24,7 @@
 
 namespace src\transformer\events\mod_lesson;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer for lesson essay assessed event.
@@ -40,7 +40,7 @@ function essay_assessed(array $config, \stdClass $event) {
     $course = $repo->read_record_by_id('course', $event->courseid);
     $lang = utils\get_course_lang($course);
 
-    $other = unserialize($event->other);
+    $other = utils\decode_other($event->other);
     $lesson = $repo->read_record_by_id('lesson', (int)$other['lessonid']);
     $attempt = $repo->read_record_by_id('lesson_attempts', $other['attemptid']);
     $page = $repo->read_record_by_id('lesson_pages', $attempt->pageid);

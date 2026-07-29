@@ -25,7 +25,7 @@
 
 namespace src\transformer\events\core;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 use src\transformer\utils\get_activity as activity;
 
 /**
@@ -55,7 +55,7 @@ function calendar_event_deleted(array $config, \stdClass $event) {
             $config,
             $lang,
             $event->objectid,
-            unserialize($event->other)['name'],
+            utils\decode_other($event->other)['name'],
         ),
         'context' => [
             ...utils\get_context_base($config, $event, $lang, $course),

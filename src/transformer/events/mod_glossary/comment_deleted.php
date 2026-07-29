@@ -24,7 +24,7 @@
 
 namespace src\transformer\events\mod_glossary;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer for glossary entry comment deleted event.
@@ -38,7 +38,7 @@ function comment_deleted(array $config, \stdClass $event) {
     $user = $repo->read_record_by_id('user', $event->userid);
     $course = $repo->read_record_by_id('course', $event->courseid);
     $lang = utils\get_course_lang($course);
-    $other = unserialize($event->other);
+    $other = utils\decode_other($event->other);
 
     $comment = new \stdClass();
     $comment->id = $event->objectid;

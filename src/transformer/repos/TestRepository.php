@@ -17,7 +17,7 @@
 namespace src\transformer\repos;
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__.'/Repository.php');
+require_once(__DIR__ . '/Repository.php');
 
 /**
  * Test repository. Used in unit testing.
@@ -55,16 +55,20 @@ class TestRepository extends Repository {
         $matchingrecords = [];
 
         foreach ($records as $record) {
-            $matched = true;
+            $conditionfailed = false;
+
             foreach ($query as $key => $value) {
                 if ($record->$key !== $value) {
-                    $matched = false;
+                    $conditionfailed = true;
                     break;
                 }
             }
-            if ($matched) {
-                $matchingrecords[] = (object) $record;
+
+            if ($conditionfailed) {
+                continue;
             }
+
+            $matchingrecords[] = (object) $record;
         }
 
         // Must account for lack of SQL and implement multidimensional sort with SQL syntax.

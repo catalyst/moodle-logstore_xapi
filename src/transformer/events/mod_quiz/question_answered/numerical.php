@@ -26,8 +26,8 @@
 
 namespace src\transformer\events\mod_quiz\question_answered;
 
-use src\transformer\utils as utils;
-use src\transformer\utils\get_activity\definition\question as question;
+use src\transformer\utils;
+use src\transformer\utils\get_activity\definition\question;
 
 /**
  * Transformer for quiz question (numerical) answered event.
@@ -49,6 +49,7 @@ function numerical(array $config, \stdClass $event, \stdClass $questionattempt, 
     [
         'min' => $min,
         'max' => $max,
+        'target' => $target,
     ] = utils\quiz_question\get_numerical_answer($config, $question->id);
     $numanswer = $questionattempt->responsesummary;
 
@@ -68,7 +69,7 @@ function numerical(array $config, \stdClass $event, \stdClass $questionattempt, 
         'result' => [
             'response' => $questionattempt->responsesummary,
             'completion' => $questionattempt->responsesummary !== '',
-            'success' => ($min <= $numanswer && $numanswer <= $max),
+            'success' => is_numeric($numanswer) && ($target == '*' || ($min <= $numanswer && $numanswer <= $max)),
             'extensions' => [
                 'http://learninglocker.net/xapi/cmi/numeric/response' => floatval($questionattempt->responsesummary),
             ],

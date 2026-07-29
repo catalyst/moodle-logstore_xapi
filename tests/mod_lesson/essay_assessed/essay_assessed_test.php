@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace logstore_xapi\mod_lesson;
+namespace logstore_xapi\mod_lesson\essay_assessed;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -29,8 +29,7 @@ require_once($CFG->dirroot . '/admin/tool/log/store/xapi/tests/xapi_test_case.ph
  * @copyright Cliff Casey <cliff@yetanalytics.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class essay_assessed_test extends \logstore_xapi\xapi_test_case {
-
+final class essay_assessed_test extends \logstore_xapi\xapi_test_case {
     /**
      * Retrieve the directory of the unit test.
      *
@@ -64,20 +63,6 @@ class essay_assessed_test extends \logstore_xapi\xapi_test_case {
      * @covers ::essay_assessed
      * @return void
      */
-    protected function initialise_defines(): void {
-        if (!defined('LESSON_PAGE_SHORTANSWER')) {
-            define('LESSON_PAGE_SHORTANSWER', 1);
-            define('LESSON_PAGE_TRUEFALSE', 2);
-            define('LESSON_PAGE_NUMERICAL', 8);
-        }
-        if (!defined('LESSON_PAGE_ESSAY')) {
-            define('LESSON_PAGE_ESSAY', 10);
-        }
-        if (!defined('LESSON_PAGE_MULTICHOICE')) {
-            define('LESSON_PAGE_MULTICHOICE', 3);
-        }
-        if (!defined('LESSON_PAGE_MATCHING')) {
-            define('LESSON_PAGE_MATCHING', 5);
-        }
+    public function test_init(): void {
     }
 }

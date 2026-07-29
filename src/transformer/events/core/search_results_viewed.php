@@ -25,7 +25,7 @@
 
 namespace src\transformer\events\core;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer fn for search results viewed event.
@@ -38,7 +38,7 @@ function search_results_viewed(array $config, \stdClass $event): array {
     $repo = $config['repo'];
     $user = $repo->read_record_by_id('user', $event->userid);
     $lang = $config['source_lang'];
-    $info = unserialize($event->other);
+    $info = utils\decode_other($event->other);
 
     return [[
         'actor' => utils\get_user($config, $user),

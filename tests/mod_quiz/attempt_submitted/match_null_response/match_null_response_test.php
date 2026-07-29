@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace logstore_xapi\core\course_completed\send_jisc_data;
+namespace logstore_xapi\mod_quiz\attempt_submitted\match_null_response;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -23,7 +23,7 @@ global $CFG;
 require_once($CFG->dirroot . '/admin/tool/log/store/xapi/tests/xapi_test_case.php');
 
 /**
- * Unit test for course completed event (jisc-specific) event.
+ * Unit test for mod_quiz attempt submitted (match null response) event.
  *
  * @package   logstore_xapi
  * @copyright Jerret Fowler <jerrett.fowler@gmail.com>
@@ -31,8 +31,7 @@ require_once($CFG->dirroot . '/admin/tool/log/store/xapi/tests/xapi_test_case.ph
  *            David Pesce <david.pesce@exputo.com>
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class send_jisc_data_test extends \logstore_xapi\xapi_test_case {
-
+final class match_null_response_test extends \logstore_xapi\xapi_test_case {
     /**
      * Retrieve the directory of the unit test.
      *
@@ -48,7 +47,7 @@ final class send_jisc_data_test extends \logstore_xapi\xapi_test_case {
      * @return string
      */
     protected function get_plugin_type() {
-        return "core";
+        return "mod";
     }
 
     /**
@@ -57,29 +56,15 @@ final class send_jisc_data_test extends \logstore_xapi\xapi_test_case {
      * @return string
      */
     protected function get_plugin_name() {
-        return "jisc";
-    }
-
-    /**
-     * Retrieve transformer configuration.
-     *
-     * @return string
-     */
-    protected function get_transformer_config() {
-        $testdata = $this->get_test_data();
-        $transformerconfig = parent::get_transformer_config();
-        return array_merge($transformerconfig, [
-            'send_jisc_data' => true,
-        ]);
+        return "quiz";
     }
 
     /**
      * Appease auto-detecting of test cases. xapi_test_case has default test cases.
      *
-     * @covers ::course_completed
+     * @covers ::attempt_submitted
      * @return void
      */
-    protected function initialise_defines(): void {
-
+    public function test_init(): void {
     }
 }

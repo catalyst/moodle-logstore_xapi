@@ -24,7 +24,7 @@
 
 namespace src\transformer\utils\quiz_question;
 
-use src\transformer\utils as utils;
+use src\transformer\utils;
 
 /**
  * Transformer utility for retrieving quiz question numeric answers.
@@ -47,17 +47,27 @@ function get_numerical_answer(
     });
     $answer = reset($answers);
     $answernums = $repo->read_records(
-        'question_numerical', [
+        'question_numerical',
+        [
             'answer' => $answer->id,
-        ]);
+        ]
+    );
     $answernum = reset($answernums);
-    $min = $answer->answer - $answernum->tolerance;
-    $max = $answer->answer + $answernum->tolerance;
     $target = $answer->answer;
+    $min = null;
+    $max = null;
+
+    // Do not calculate if answer is a wildcard (cloze format).
+    if (is_numeric($target)) {
+        $tolerance = floatval($answernum->tolerance);
+        $target = floatval($target);
+        $min = $target - $tolerance;
+        $max = $target + $tolerance;
+    }
+
     return [
         'min' => $min,
         'max' => $max,
         'target' => $target,
     ];
-
 }
